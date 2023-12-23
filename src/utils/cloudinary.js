@@ -1,15 +1,9 @@
 import {
   CLOUDINARY_API_KEY,
-  CLOUDINARY_API_SECRET,
   CLOUDINARY_CLOUD_NAME,
   CLOUDINARY_UPLOAD_PRESET,
 } from "../app/config";
 import axios from "axios";
-
-const REACT_APP_CLOUDINARY_CLOUD_NAME = "dtrxwubwe";
-const REACT_APP_CLOUDINARY_UPLOAD_PRESET = "coder_comm";
-const REACT_APP_CLOUDINARY_API_KEY = "461127275773421";
-const REACT_APP_CLOUDINARY_API_SECRET = "P2t87fwnG3or_UwdlP_-hT_qJY4";
 
 export const cloudinaryUpload = async (image) => {
   if (!image) return "";
@@ -18,11 +12,11 @@ export const cloudinaryUpload = async (image) => {
   try {
     const formData = new FormData();
     formData.append("file", image);
-    formData.append("upload_preset", REACT_APP_CLOUDINARY_UPLOAD_PRESET);
-    formData.append("api_key", REACT_APP_CLOUDINARY_API_KEY);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    formData.append("api_key", CLOUDINARY_API_KEY);
     formData.append("timestamp", timestamp);
     const response = await axios({
-      url: `https://api.cloudinary.com/v1_1/dtrxwubwe/image/upload`,
+      url: `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
       method: "POST",
       data: formData,
       headers: {

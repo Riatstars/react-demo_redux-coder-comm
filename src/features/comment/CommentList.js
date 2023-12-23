@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { getComments } from "./commentSlice";
 import { COMMENTS_PER_POST } from "../../app/config";
 import { Pagination, Stack, Typography } from "@mui/material";
 import CommentCard from "./CommentCard";
 import LoadingScreen from "../../components/LoadingScreen";
-import { DeleteContext } from "../post/PostCard";
 
 function CommentList({ postId }) {
   const {

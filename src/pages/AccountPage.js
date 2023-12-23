@@ -5,7 +5,6 @@ import ShareIcon from "@mui/icons-material/Share";
 import AccountGeneral from "../features/user/AccountGeneral";
 import AccountSocialLinks from "../features/user/AccountSocialLinks";
 import { capitalCase } from "change-case";
-import { current } from "@reduxjs/toolkit";
 
 function AccountPage() {
   const [currentTab, setCurrentTab] = useState("general");
