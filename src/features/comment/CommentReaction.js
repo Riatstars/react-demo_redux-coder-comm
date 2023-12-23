@@ -17,8 +17,6 @@ function CommentReaction({ comment }) {
     dispatch(sendCommentReaction({ commentId: comment._id, emoji }));
   };
 
-  console.log(comment);
-
   return (
     <>
       <DeleteConfirmationModal
