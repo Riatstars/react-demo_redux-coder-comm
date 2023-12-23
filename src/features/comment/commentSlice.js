@@ -67,17 +67,18 @@ export const createComment =
         postId,
       });
       dispatch(slice.actions.createCommentSuccess(response.data));
-      dispatch(slice.actions.getComments({ postId }));
+      dispatch(getComments({ postId }));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
     }
   };
-export const deleteComment = (commentId) => async (dispatch) => {
+export const deleteComment = (comment) => async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
-    await apiService.delete(`/comments/${commentId}`);
-
-    dispatch(slice.actions.deleteCommentSuccess(commentId));
+    await apiService.delete(`/comments/${comment._id}`);
+    const postId = comment.post;
+    dispatch(slice.actions.deleteCommentSuccess(comment._id));
+    dispatch(getComments({ postId }));
     toast.success("Your comment has been deleted");
   } catch (error) {
     dispatch(slice.actions.hasError(error.message));

@@ -20,7 +20,7 @@ const style = {
   p: 4,
 };
 
-const DeleteConfirmationModal = ({ deleteType, setOpen, open, itemId }) => {
+const DeleteConfirmationModal = ({ deleteType, setOpen, open, item }) => {
   const handleClose = () => setOpen(false);
   const dispatch = useDispatch();
   const setPage = React.useContext(DeleteContext);
@@ -28,11 +28,11 @@ const DeleteConfirmationModal = ({ deleteType, setOpen, open, itemId }) => {
   const handleDelete = () => {
     switch (deleteType) {
       case "post":
-        dispatch(deletePost(itemId));
+        dispatch(deletePost(item));
         setPage(0);
         break;
       case "comment":
-        dispatch(deleteComment(itemId));
+        dispatch(deleteComment(item));
 
         break;
       default:

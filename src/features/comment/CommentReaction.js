@@ -23,7 +23,7 @@ function CommentReaction({ comment }) {
         deleteType="comment"
         setOpen={setDelModalOpen}
         open={delModalOpen}
-        itemId={comment._id}
+        item={comment}
       />
       <Stack direction="row" alignItems="center">
         <IconButton

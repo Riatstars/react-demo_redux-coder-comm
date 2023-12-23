@@ -51,7 +51,7 @@ function PostCard({ post, setPage }) {
           deleteType="post"
           setOpen={setDelModalOpen}
           open={delModalOpen}
-          itemId={post._id}
+          item={post}
         />
         <EditPostModal
           post={post}
