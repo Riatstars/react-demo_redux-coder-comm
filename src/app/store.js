@@ -12,7 +12,7 @@ const rootReducer = {
 };
 const store = configureStore({
   reducer: rootReducer,
-  devTools: process.env.NODE_ENV === "develop",
+  devTools: false,
 });
 
 export default store;
