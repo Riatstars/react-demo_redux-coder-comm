@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { FormProvider, FTextField, FUploadImage } from "../../components/form";
 
 import { useForm } from "react-hook-form";
@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import { alpha, Box, Card, Stack } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import { useDispatch, useSelector } from "react-redux";
-import { createPost } from "./postSlice";
+import { createPost, editPost } from "./postSlice";
 
 const yupSchema = Yup.object().shape({
   content: Yup.string().required("Content is required"),
@@ -18,7 +18,7 @@ const defaultValues = {
   image: "",
 };
 
-function PostForm() {
+function PostForm({ post, handleClose }) {
   const { isLoading } = useSelector((state) => state.post);
   const dispatch = useDispatch();
   const methods = useForm({
@@ -33,8 +33,21 @@ function PostForm() {
   } = methods;
 
   const onSubmit = (data) => {
-    dispatch(createPost(data)).then(() => reset());
+    if (!!post) {
+      const postId = post._id;
+      dispatch(editPost({ postId, data }));
+      handleClose();
+    } else {
+      dispatch(createPost(data)).then(() => reset());
+    }
   };
+
+  useEffect(() => {
+    if (!!post) {
+      setValue("content", post.content);
+      setValue("image", post.image);
+    }
+  }, [post, setValue]);
 
   const handleDrop = useCallback(
     (acceptedFiles) => {
@@ -59,7 +72,7 @@ function PostForm() {
             multiline
             fullWidth
             rows={4}
-            placeholder="Share waht you thinking here..."
+            placeholder="Share what you thinking here..."
             sx={{
               "& fieldset": {
                 borderWith: "1px !important",
@@ -67,7 +80,6 @@ function PostForm() {
               },
             }}
           />
-          {/* <input type="file" ref={fileInput} onChange={handleFile} /> */}
           <FUploadImage
             name="image"
             accept="image/*"
@@ -87,7 +99,7 @@ function PostForm() {
               size="small"
               loading={isSubmitting || isLoading}
             >
-              Post
+              {!!post ? "Edit" : "Create"}
             </LoadingButton>
           </Box>
         </Stack>

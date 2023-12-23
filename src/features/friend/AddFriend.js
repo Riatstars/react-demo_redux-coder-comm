@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUsers } from "./friendSlice";
+import { getSentFriendRequests, getUsers } from "./friendSlice";
 import {
   Stack,
   Typography,
@@ -8,6 +8,10 @@ import {
   Box,
   TablePagination,
   Container,
+  Switch,
+  FormControl,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
 import UserTable from "./UserTable";
 import SearchInput from "../../components/SearchInput";
@@ -17,12 +21,17 @@ function AddFriend() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const dispatch = useDispatch();
+  const [sentRequestFilter, setSentRequestFilter] = useState(false);
 
   const { currentPageUsers, usersById, totalUsers } = useSelector(
     (state) => state.friend
   );
+
   const users = currentPageUsers.map((userId) => usersById[userId]);
 
+  const handleChangeSent = () => {
+    setSentRequestFilter((prevState) => !prevState);
+  };
   const handleSubmit = (searchQuery) => {
     setFilterName(searchQuery);
   };
@@ -35,8 +44,18 @@ function AddFriend() {
   };
 
   useEffect(() => {
-    dispatch(getUsers({ filterName, page: page + 1, limit: rowsPerPage }));
-  }, [filterName, page, rowsPerPage, dispatch]);
+    if (sentRequestFilter) {
+      dispatch(
+        getSentFriendRequests({
+          filterName,
+          page: page + 1,
+          limit: rowsPerPage,
+        })
+      );
+    } else {
+      dispatch(getUsers({ filterName, page: page + 1, limit: rowsPerPage }));
+    }
+  }, [filterName, page, rowsPerPage, dispatch, sentRequestFilter]);
   return (
     <Container>
       <Typography variant="h4" sx={{ mb: 3 }}>
@@ -59,6 +78,21 @@ function AddFriend() {
             </Typography>
 
             <Box sx={{ flexGrow: 1 }} />
+
+            <FormControl component="fieldset" variant="standard">
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={sentRequestFilter}
+                      onChange={handleChangeSent}
+                      name="sentRequestFilter"
+                    />
+                  }
+                  label="Sent Requests"
+                />
+              </FormGroup>
+            </FormControl>
 
             <TablePagination
               sx={{

@@ -22,15 +22,18 @@ import useAuth from "../../hooks/useAuth";
 import { toast } from "react-toastify";
 
 import DeleteConfirmationModal from "../../components/DeleteConfimationModal";
+import EditPostModal from "../../components/EditPostModal";
 
 export const DeleteContext = createContext();
+
 function PostCard({ post, setPage }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const { user } = useAuth();
   const [delModalOpen, setDelModalOpen] = React.useState(false);
-
+  const [editModalOpen, setEditModalOpen] = React.useState(false);
+  const ownPost = user._id === (post.author._id || post.author);
   const handleMenu = (event) => {
-    if (user._id !== post.author._id) {
+    if (!ownPost) {
       toast.warning("This is not your post");
       return;
     }
@@ -50,10 +53,18 @@ function PostCard({ post, setPage }) {
           open={delModalOpen}
           itemId={post._id}
         />
+        <EditPostModal
+          post={post}
+          open={editModalOpen}
+          setOpen={setEditModalOpen}
+        />
         <CardHeader
           disableTypography
           avatar={
-            <Avatar src={post?.author?.avatarUrl} alt={post?.author?.name} />
+            <Avatar
+              src={ownPost ? user.avatarUrl : post?.author?.avatarUrl}
+              alt={ownPost ? user.name : post?.author?.name}
+            />
           }
           title={
             <Link
@@ -63,7 +74,7 @@ function PostCard({ post, setPage }) {
               sx={{ fontWeight: 600 }}
               to={`/user/${post.author._id}`}
             >
-              {post?.author?.name}
+              {ownPost ? user.name : post?.author?.name}
             </Link>
           }
           subheader={
@@ -94,7 +105,9 @@ function PostCard({ post, setPage }) {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
               >
-                <MenuItem onClick={handleMenuClose}>Edit Post</MenuItem>
+                <MenuItem onClick={() => setEditModalOpen(true)}>
+                  Edit Post
+                </MenuItem>
                 <MenuItem onClick={() => setDelModalOpen(true)}>
                   Delete Post
                 </MenuItem>

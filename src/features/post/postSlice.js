@@ -42,6 +42,12 @@ const slice = createSlice({
       });
       delete state.postsById[deletedPostId];
     },
+    editPostSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const newPost = action.payload.data;
+      state.postsById[newPost._id] = newPost;
+    },
     getPostsSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
@@ -98,6 +104,26 @@ export const deletePost = (postId) => async (dispatch) => {
     toast.error(error.message);
   }
 };
+
+export const editPost =
+  ({ postId, data }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const { content, image } = data;
+      const imageUrl = await cloudinaryUpload(image);
+      const response = await apiService.put(`/posts/${postId}`, {
+        content,
+        image: imageUrl,
+      });
+
+      dispatch(slice.actions.editPostSuccess(response.data));
+      toast.success("Your post has been changed");
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+      toast.error(error.message);
+    }
+  };
 
 export const getPosts =
   ({ userId, page, limit = POSTS_PER_PAGE }) =>
